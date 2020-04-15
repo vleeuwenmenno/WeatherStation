@@ -1,0 +1,255 @@
+<html>
+    <head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+        <link rel="shortcut icon" href="https://d30y9cdsu7xlg0.cloudfront.net/png/29013-200.png" type="image/x-icon">
+
+		<title>Weather Station</title>
+
+		<style>
+					  :root #content > #right > .dose > .dosesingle,
+			:root #content > #center > .dose > .dosesingle
+			{display:none !important;}
+
+			/*
+			 * Base structure
+			 */
+
+			/* Move down content because we have a fixed navbar that is 50px tall */
+			body {
+			  padding-top: 50px;
+			}
+
+			/*
+			 * Typography
+			 */
+
+			h1 {
+			  margin-bottom: 20px;
+			  padding-bottom: 9px;
+			  border-bottom: 1px solid #eee;
+			}
+
+			/*
+			 * Sidebar
+			 */
+
+			.sidebar {
+			  position: fixed;
+			  top: 51px;
+			  bottom: 0;
+			  left: 0;
+			  z-index: 1000;
+			  padding: 20px;
+			  overflow-x: hidden;
+			  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+			  border-right: 1px solid #eee;
+			}
+
+			/* Sidebar navigation */
+			.sidebar {
+			  padding-left: 0;
+			  padding-right: 0;
+			}
+
+			.sidebar .nav {
+			  margin-bottom: 20px;
+			}
+
+			.sidebar .nav-item {
+			  width: 100%;
+			}
+
+			.sidebar .nav-item + .nav-item {
+			  margin-left: 0;
+			}
+
+			.sidebar .nav-link {
+			  border-radius: 0;
+			}
+
+			/*
+			 * Dashboard
+			 */
+
+			 /* Placeholders */
+			.placeholders {
+			  padding-bottom: 3rem;
+			}
+
+			.placeholder img {
+			  padding-top: 1.5rem;
+			  padding-bottom: 1.5rem;
+			}
+
+			.loader {
+			  color: #A1A1A1;
+			  font-size: 40px;
+			  text-indent: -9999em;
+			  overflow: hidden;
+			  width: 1em;
+			  height: 1em;
+			  border-radius: 50%;
+			  margin: 72px auto;
+			  position: relative;
+			  -webkit-transform: translateZ(0);
+			  -ms-transform: translateZ(0);
+			  transform: translateZ(0);
+			  -webkit-animation: load6 1.7s infinite ease;
+			  animation: load6 1.7s infinite ease;
+			}
+			@-webkit-keyframes load6 {
+			  0% {
+				-webkit-transform: rotate(0deg);
+				transform: rotate(0deg);
+				box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+			  }
+			  5%,
+			  95% {
+				box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+			  }
+			  10%,
+			  59% {
+				box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+			  }
+			  20% {
+				box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+			  }
+			  38% {
+				box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+			  }
+			  100% {
+				-webkit-transform: rotate(360deg);
+				transform: rotate(360deg);
+				box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+			  }
+			}
+			@keyframes load6 {
+			  0% {
+				-webkit-transform: rotate(0deg);
+				transform: rotate(0deg);
+				box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+			  }
+			  5%,
+			  95% {
+				box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+			  }
+			  10%,
+			  59% {
+				box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+			  }
+			  20% {
+				box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+			  }
+			  38% {
+				box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+			  }
+			  100% {
+				-webkit-transform: rotate(360deg);
+				transform: rotate(360deg);
+				box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+			  }
+			}
+
+		</style>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/css/tether.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/css/tether-theme-basic.min.css" />
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap2/bootstrap-switch.min.css" rel="stylesheet">
+		
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+		<script src="https://use.fontawesome.com/fef917fc6f.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+			<button class="navbar-toggler navbar-toggler-right hidden-lg-up" id="navBarToggleBtn" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<a class="navbar-brand" href="#">Weather Station</a>
+
+			<div class="collapse navbar-collapse" id="navbarsExampleDefault" style="top: 8px; position: relative;">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<a class="nav-link" href="#">Dashboard <span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">7 Days report</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Older reports</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Settings</a>
+					</li>
+				</ul>
+				<form class="form-inline mt-2 mt-md-0">
+					<a class="btn btn-success my-2 my-sm-0" id="loginBtn">Ingelogd</a>
+				</form>
+			</div>
+		</nav>
+
+        <div class="container">
+            <!-- Example row of columns -->
+            <div class="row">
+				<div class="col-lg-4" style="padding-top: 32px;">
+				  	<div class="card" style="width: 20rem;">
+						<img class="card-img-top" src="http://icons.iconarchive.com/icons/iconsmind/outline/512/Temperature-2-2-icon.png" style="width: 320; height: 320px; padding: 48px;" alt="Card image cap">
+						<div class="card-block">
+							<h4 class="card-title">Temperature</h4>
+							<p class="card-text">Average of today: 21&deg;C<br />Right now: 9&deg;C</p>
+							<a href="#" class="btn btn-info">History</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4" style="padding-top: 32px;">
+					<div class="card" style="width: 20rem;">
+						<img class="card-img-top" src="http://icons.iconarchive.com/icons/icons8/windows-8/512/Weather-Sunset-icon.png" style="width: 320; height: 320px; padding: 48px;" alt="Card image cap">
+						<div class="card-block">
+							<h4 class="card-title">Air-pressure</h4>
+							<p class="card-text">Pressure: 995 mBar<br />Humidity: 67%</p>
+							<a href="#" class="btn btn-info">History</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4" style="padding-top: 32px;">
+					<div class="card" style="width: 20rem;">
+						<img class="card-img-top" src="http://icons.iconarchive.com/icons/thesquid.ink/free-flat-sample/1024/wind-sock-icon.png" style="width: 320; height: 320px; padding: 48px;" alt="Card image cap">
+						<div class="card-block">
+							<h4 class="card-title">Wind</h4>
+							<p class="card-text">Wind-speed: 24.6 km/h<br />Direction: south-east</p>
+							<a href="#" class="btn btn-info">History</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4" style="padding-top: 32px;">
+					<div class="card" style="width: 20rem;">
+						<img class="card-img-top" src="http://icons.iconarchive.com/icons/icons8/ios7/512/Weather-Rain-icon.png" style="width: 320; height: 320px; padding: 48px;" alt="Card image cap">
+						<div class="card-block">
+							<h4 class="card-title">Rain</h4>
+							<p class="card-text">Raining: No<br /></p>
+							<a href="#" class="btn btn-info">History</a>
+						</div>
+					</div>
+				</div>
+			</div>
+            <hr>
+
+            <footer>
+                <p>Menno van Leeuwen © 2016-2020</p>
+            </footer>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/nl.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-notify/0.2.0/js/bootstrap-notify.min.js"></script>
+	</body>
+</html>
