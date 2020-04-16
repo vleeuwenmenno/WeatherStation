@@ -5,11 +5,15 @@
 #include <EthernetUdp.h>
 #include <NTPClient.h>
 #include <TimeLib.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 // ############## Defines ##############
 
 // How big our line buffer should be
 #define BUFSIZ 96
+
+#define TEMP_WIRE 7
 
 // store error strings in flash to save RAM
 #define error(s) error_P(PSTR(s))
@@ -32,6 +36,9 @@ File root;
 
 EthernetUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
+
+OneWire oneWire(TEMP_WIRE);
+DallasTemperature sensors(&oneWire);
 
 //  ^^^^^^^^^^^^^ Vars ^^^^^^^^^^^^^
 
@@ -155,12 +162,20 @@ void sensorCallback()
     File wind = SD.open(path + "/WIND.LOG", FILE_WRITE);
     File rain = SD.open(path + "/RAIN.LOG", FILE_WRITE);
 
+    sensors.requestTemperatures(); 
+    
+    float temp = sensors.getTempCByIndex(0);
+    Serial.print("Celsius temperature: ");
+    Serial.print(temp); 
+    Serial.print(" ");
+
     temps.print(printDigits(hour()));
     temps.print(":");
     temps.print(printDigits(minute()));
     temps.print(":");     
     temps.print(printDigits(second()));
-    temps.println("   TO_BE_IMPLEMENTED");
+    temps.print("   ");
+    temps.println(temp);
 
     press.print(printDigits(hour()));
     press.print(":");
@@ -383,7 +398,7 @@ void setup()
 
     // Begin sensor reading thread
     sensorReader.onRun(sensorCallback);
-	sensorReader.setInterval(30000);
+	sensorReader.setInterval(10000);
 
     timeClient.begin();
 }
