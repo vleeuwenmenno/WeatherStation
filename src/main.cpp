@@ -2,7 +2,9 @@
 #include <Thread.h>
 #include <SD.h>
 #include <Ethernet.h>
-#include <swRTC.h>
+#include <EthernetUdp.h>
+#include <NTPClient.h>
+#include <TimeLib.h>
 
 // ############## Defines ##############
 
@@ -22,12 +24,14 @@
 Thread sensorReader = Thread();
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-byte ip[] = { 10, 0, 1, 248 };
+byte ip[] = { 10, 0, 1, 202 };
 
 EthernetServer server(80);
 
 File root;
-swRTC rtc;
+
+EthernetUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
 
 //  ^^^^^^^^^^^^^ Vars ^^^^^^^^^^^^^
 
@@ -102,34 +106,90 @@ void printDirectory(File dir, int numTabs)
    }
 }
 
-void printDigits(int digits)
+String printDigits(int digits)
 {
-    Serial.print(":");
-
+    String retval = "";
+    // utility for digital clock display: prints preceding colon and leading 0
     if(digits < 10)
-        Serial.print('0');
+        retval += "0";
 
-    Serial.print(digits);
+    retval += digits;
+    return retval;
 }
 
-void printDateTime()
+void digitalClockDisplay()
 {
-    Serial.print(rtc.getHours());
-    printDigits(rtc.getMinutes());
-    printDigits(rtc.getSeconds());
+    // digital clock display of the time
+    Serial.print(printDigits(hour()));
+    Serial.print(":");
+    Serial.print(printDigits(minute()));
+    Serial.print(":");     
+    Serial.print(printDigits(second()));
+
     Serial.print(" ");
-    Serial.print(rtc.getDay());
-    Serial.print(" ");
-    Serial.print(rtc.getMonth());
-    Serial.print(" ");
-    Serial.print(rtc.getYear());
-    Serial.println();
+    Serial.print(printDigits(day()));
+    Serial.print("/");     
+    Serial.print(printDigits(month()));
+    Serial.print("/");
+    Serial.print(year());
 }
 
 void sensorCallback()
 {
-	Serial.print(F("DateTime: "));
-    printDateTime();
+    timeClient.update();
+    time_t t = static_cast<time_t>(timeClient.getEpochTime());
+    setTime(t);
+    
+    Serial.print("Log cycle ");
+    digitalClockDisplay();
+
+    String path = "/LOGS/" + String(year());    
+    path += "/" + String(month());
+    path += "/" + String(day());
+
+    if (!SD.exists(path))
+        SD.mkdir(path);
+
+    File temps = SD.open(path + "/TEMP.LOG", FILE_WRITE);
+    File press = SD.open(path + "/PRESSURE.LOG", FILE_WRITE);
+    File wind = SD.open(path + "/WIND.LOG", FILE_WRITE);
+    File rain = SD.open(path + "/RAIN.LOG", FILE_WRITE);
+
+    temps.print(printDigits(hour()));
+    temps.print(":");
+    temps.print(printDigits(minute()));
+    temps.print(":");     
+    temps.print(printDigits(second()));
+    temps.println("   TO_BE_IMPLEMENTED");
+
+    press.print(printDigits(hour()));
+    press.print(":");
+    press.print(printDigits(minute()));
+    press.print(":");     
+    press.print(printDigits(second()));
+    press.println("   TO_BE_IMPLEMENTED");
+
+    wind.print(printDigits(hour()));
+    wind.print(":");
+    wind.print(printDigits(minute()));
+    wind.print(":");     
+    wind.print(printDigits(second()));
+    wind.println("   TO_BE_IMPLEMENTED");
+
+    rain.print(printDigits(hour()));
+    rain.print(":");
+    rain.print(printDigits(minute()));
+    rain.print(":");     
+    rain.print(printDigits(second()));
+    rain.println("   TO_BE_IMPLEMENTED");
+
+    temps.close();
+    press.close();
+    wind.close();
+    rain.close();    
+
+    Serial.print(" logs updated in ");
+    Serial.println(path.c_str());
 }
 
 void webServerCallback()
@@ -202,7 +262,7 @@ void webServerCallback()
                                 
                     client.println("HTTP/1.1 200 OK");
 
-                    if (String(filename) == "")
+                    if (String(filename) == "" && SD.exists("/INDEX.HTM"))
                     {
                         // Any non-directory clicked, server will send file to client for download
                         client.println("Content-Type: text/html");
@@ -210,8 +270,22 @@ void webServerCallback()
 
                         filename = "INDEX.HTM";
                         file = SD.open(filename, O_READ);
+
+                        char file_buffer[16];
+                        int avail;
+                        while (avail = file.available()) 
+                        {
+                            int to_read = min(avail, 16);
+                            if (to_read != file.read(file_buffer, to_read)) 
+                                break;
+                            
+                            client.write(file_buffer, to_read);
+                        }
+                        file.close();
+                        break;
                     }
-                    else if (file.isDirectory()) 
+
+                    if (file.isDirectory()) 
                     {
                         Serial.println("is a directory");
                         client.println("Content-Type: text/html");
@@ -224,7 +298,7 @@ void webServerCallback()
 
                         file.close();              
                     } 
-                    else if (String(filename).endsWith(".TXT"))
+                    else if (String(filename).endsWith(".LOG") || String(filename).endsWith(".TXT"))
                     {
                         // Any non-directory clicked, server will send file to client for download
                         client.println("Content-Type: text/plain");
@@ -309,14 +383,9 @@ void setup()
 
     // Begin sensor reading thread
     sensorReader.onRun(sensorCallback);
-	sensorReader.setInterval(5000);
+	sensorReader.setInterval(30000);
 
-    rtc.setDate(16, 05, 2020);
-    rtc.setTime(0, 30, 0);
-    rtc.startRTC();
-
-    Serial.print(F("Timestamp: "));
-    Serial.println(rtc.getTimestamp());
+    timeClient.begin();
 }
  
 void loop()
